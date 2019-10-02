@@ -11,5 +11,11 @@ namespace SimplePersistence.Employee
         public string lastName { get; set; }
         public int hireYear { get; set; }
 
+
+
+        public override string ToString()
+        {
+            return $"{id}| {lastName}, {firstName}| Hired in {hireYear}";
+        }
     }
 }
