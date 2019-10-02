@@ -15,7 +15,7 @@ namespace SimplePersistence.Employee
 
         public override string ToString()
         {
-            return $"{id}| {lastName}, {firstName}| Hired in {hireYear}";
+            return $"ID: {id} | {lastName}, {firstName}| Hired in {hireYear}";
         }
     }
 }
