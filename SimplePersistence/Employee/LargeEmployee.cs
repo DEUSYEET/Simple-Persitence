@@ -4,7 +4,9 @@ using System.Text;
 
 namespace SimplePersistence.Employee
 {
-    class LargerEmployee
+    class LargeEmployee : Employee
     {
+        public byte[] someData { get; set; }
+
     }
 }

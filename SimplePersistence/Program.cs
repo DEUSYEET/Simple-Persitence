@@ -6,6 +6,6 @@ namespace SimplePersistence
     {
         static void Main(string[] args)
         {
-        }
+        }   
     }
 }
