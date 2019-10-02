@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+
+
+*
+!*/
+!.gitignore
+!*.cs
+!*.xaml
+!*.xaml.cs
+!*.png
+*/ARM/Debug/
+*/x86/Debug/
