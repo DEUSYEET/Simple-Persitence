@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Reference Include="KellyJ_ConsoleIO">
-      <HintPath>KellyJ_ConsoleIO.dll</HintPath>
+      <HintPath>..\..\..\Quarter 5 Classes\Databases 2\KellyJ_ConsoleIO.dll</HintPath>
     </Reference>
   </ItemGroup>
 
