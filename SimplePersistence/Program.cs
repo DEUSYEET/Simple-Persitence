@@ -8,6 +8,14 @@ namespace SimplePersistence
 {
     public class Program
     {
+        //static string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
+        //static string fileLocationSerial = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long serialized";
+
+
+        static string fileLocation = "C:\\Users\\drago\\Downloads\\People Records\\people\\long";
+        static string fileLocationSerial = "C:\\Users\\drago\\Downloads\\People Records\\people\\longserialized";
+
+
         public static void Main(string[] args)
         {
             int choice;
@@ -25,16 +33,19 @@ namespace SimplePersistence
                 switch (choice)
                 {
                     case 1:
+                        AddEmployee(CIO.PromptForInt("Enter ID: ", 1, Int32.MaxValue), CIO.PromptForInput("Enter First Name: ", false), CIO.PromptForInput("Enter Last Name: ", false), CIO.PromptForInt("Enter Hire Date: ", 1, Int32.MaxValue));
                         break;
                     case 2:
+                        DeleteEmployee(CIO.PromptForInt("Enter Employee ID: ", 1, Int32.MaxValue));
                         break;
                     case 3:
+                        UpdateEmployee(CIO.PromptForInt("Enter ID: ", 1, Int32.MaxValue), CIO.PromptForInput("Enter First Name: ", false), CIO.PromptForInput("Enter Last Name: ", false), CIO.PromptForInt("Enter Hire Date: ", 1, Int32.MaxValue));
                         break;
                     case 4:
                         SerializeAllEmployees();
                         break;
                     case 5:
-                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ",1,10000)).ToString());
+                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ",1,Int32.MaxValue)).ToString());
                         break;
                 }
 
@@ -70,7 +81,6 @@ namespace SimplePersistence
 
         public static void AddEmployee(int id, string firstName, string lastName, int hireDate)
         {
-            string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
             var files = Directory.GetFiles(fileLocation);
             bool isThere = false;
             foreach (var f in files)
@@ -91,7 +101,6 @@ namespace SimplePersistence
 
         public static void DeleteEmployee(int id)
         {
-            string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
             var files = Directory.GetFiles(fileLocation);
             bool isThere = false;
             foreach (var f in files)
@@ -104,49 +113,6 @@ namespace SimplePersistence
                 }
             }
 
-        public static void SerializeAllEmployees()
-        {
-            //DataContractSerializer ser = new DataContractSerializer(typeof(Employee.Employee));
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-
-
-
-            //var files = Directory.GetFiles("C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\simple");
-            var files = Directory.GetFiles("C:\\Users\\drago\\Downloads\\People Records\\people\\long");
-            foreach (var f in files)
-            {
-                string text = File.ReadAllText(f);
-                string[] words = text.Split(',');
-                Int32.TryParse(words[0], out int id);
-                Int32.TryParse(words[3], out int year);
-
-                Employee.Employee emp = new Employee.Employee(id, words[1], words[2], year);
-
-
-                Stream s = File.Open($"C:\\Users\\drago\\Downloads\\People Records\\people\\longserialized\\{id}.txt", FileMode.Create);
-
-                //ser.WriteObject(s, emp);
-
-                binaryFormatter.Serialize(s, emp);
-                Console.WriteLine($"Serialized employee ID: {id}");
-                s.Close();
-
-
-
-            }
-
-        }
-
-
-        public static Employee.Employee GetSerializedEmployee(int id)
-        {
-            Stream s = File.Open($"C:\\Users\\drago\\Downloads\\People Records\\people\\longserialized\\{id}.txt", FileMode.Open);
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
-            s.Close();
-
-            return e;
-        }
 
 
             if (!isThere)
@@ -161,7 +127,6 @@ namespace SimplePersistence
 
         public static void UpdateEmployee(int id, string firstName, string lastName, int hireDate)
         {
-            string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
             var files = Directory.GetFiles(fileLocation);
             bool isThere = false;
             foreach (var f in files)
@@ -182,6 +147,41 @@ namespace SimplePersistence
             {
                 Console.WriteLine($"Employee {id} has been updated");
             }
+        }
+        public static void SerializeAllEmployees()
+        {
+            //DataContractSerializer ser = new DataContractSerializer(typeof(Employee.Employee));
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+            var files = Directory.GetFiles(fileLocation);
+            foreach (var f in files)
+            {
+                string text = File.ReadAllText(f);
+                string[] words = text.Split(',');
+                Int32.TryParse(words[0], out int id);
+                Int32.TryParse(words[3], out int year);
+
+                Employee.Employee emp = new Employee.Employee(id, words[1], words[2], year);
+                Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Create);
+                binaryFormatter.Serialize(s, emp);
+                Console.WriteLine($"Serialized employee ID: {id}");
+                s.Close();
+
+
+
+            }
+
+        }
+
+
+        public static Employee.Employee GetSerializedEmployee(int id)
+        {
+            Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Open);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
+            s.Close();
+
+            return e;
         }
     }
 }
