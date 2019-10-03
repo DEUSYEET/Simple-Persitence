@@ -4,22 +4,25 @@ using System.Text;
 
 namespace SimplePersistence.Employee
 {
-    class Employee
+    public class Employee
     {
-        public int id { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public int hireYear { get; set; }
 
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int HireYear { get; set; }
 
+        public Employee(int id, string firstName, string lastName, int hireYear)
+        {
+            this.Id = id;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.HireYear = hireYear;
+        }
 
         public override string ToString()
         {
-            return $"ID: {id} | {lastName}, {firstName}| Hired in {hireYear}";
+            return $"ID: {Id} | {LastName}, {FirstName}| Hired in {HireYear}";
         }
-
-
-
-
     }
 }
