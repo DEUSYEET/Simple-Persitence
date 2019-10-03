@@ -7,8 +7,9 @@ namespace SimplePersistence
     {
         public static void Main(string[] args)
         {
-           var files = Directory.GetFiles("C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\simple");
-            foreach(var f in files)
+            //var files = Directory.GetFiles("C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\simple");
+            var files = Directory.GetFiles("C:\\Users\\drago\\Downloads\\People Records\\people\\simple");
+            foreach (var f in files)
             {
                 //PrintPeopleDetails(f);
                 PrintEmployees(f);

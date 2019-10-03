@@ -8,14 +8,15 @@ namespace SimplePersistence.Employee
     {
         public byte[] Data { get; set; }
 
-        public LargeEmployee(int id, string firstName, string lastName, int hireYear, byte[] data)
+
+        public LargeEmployee(int id, string firstName, string lastName, int hireYear, byte[] data) : base(id, firstName, lastName, hireYear)
         {
-            this.Id = id;
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.HireYear = hireYear;
             this.Data = data;
         }
+
+
+
+
 
     }
 }
