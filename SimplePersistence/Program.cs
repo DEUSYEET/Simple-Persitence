@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSC160_ConsoleMenu;
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,6 +10,7 @@ namespace SimplePersistence
     {
         public static void Main(string[] args)
         {
+            int choice;
             //var files = Directory.GetFiles("C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\simple");
             var files = Directory.GetFiles("C:\\Users\\drago\\Downloads\\People Records\\people\\simple");
             //foreach (var f in files)
@@ -16,9 +18,32 @@ namespace SimplePersistence
             //    PrintPeopleDetails(f);
             //    PrintEmployees(f);
             //}
-            SerializeAllEmployees();
+            do
+            {
+                String[] menu = { "Add Employee", "Delete Employee", "Update Employee", "Serialize All Employees", "Find serialized employee" };
+                choice = CIO.PromptForMenuSelection(menu, true);
 
-            Console.WriteLine(GetSerializedEmployee(420).ToString());
+                switch (choice)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        SerializeAllEmployees();
+                        break;
+                    case 5:
+                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ",1,10000)).ToString());
+                        break;
+                }
+
+
+
+
+            } while (choice != 0);
+
 
 
         }
