@@ -1,5 +1,6 @@
 ﻿using CSC160_ConsoleMenu;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -27,7 +28,7 @@ namespace SimplePersistence
             //}
             do
             {
-                String[] menu = { "Add Employee", "Delete Employee", "Update Employee", "Serialize All Employees", "Find serialized employee" };
+                String[] menu = { "Add Employee", "Delete Employee", "Update Employee", "Serialize All Employees", "Get serialized employee", "Print Serialized details", "Print all employees" };
                 choice = CIO.PromptForMenuSelection(menu, true);
 
                 switch (choice)
@@ -45,8 +46,45 @@ namespace SimplePersistence
                         SerializeAllEmployees();
                         break;
                     case 5:
-                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ",1,Int32.MaxValue)).ToString());
+                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ", 1, Int32.MaxValue)).ToString());
                         break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    case 9:
+                        PrintSerializedDetails(fileLocationSerial);
+                        break;
+                    case 10:
+                        printAllEmployees();
+                        break;
+
+
+
+
+
                 }
 
 
@@ -162,7 +200,7 @@ namespace SimplePersistence
                 Int32.TryParse(words[3], out int year);
 
                 Employee.Employee emp = new Employee.Employee(id, words[1], words[2], year);
-                Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Create);
+                Stream s = File.Open(fileLocationSerial + $"\\{id}.ser", FileMode.Create);
                 binaryFormatter.Serialize(s, emp);
                 Console.WriteLine($"Serialized employee ID: {id}");
                 s.Close();
@@ -176,12 +214,53 @@ namespace SimplePersistence
 
         public static Employee.Employee GetSerializedEmployee(int id)
         {
-            Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Open);
+            Stream s = File.Open(fileLocationSerial + $"\\{id}.ser", FileMode.Open);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
             s.Close();
 
             return e;
         }
+
+
+        public static void PrintSerializedDetails(string path)
+        {
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            var files = Directory.GetFiles(path);
+            foreach (var f in files)
+            {
+                Stream s = File.Open(f, FileMode.Open);
+                Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        public static Dictionary<int, Employee.Employee> getAllEmployees(string path)
+        {
+            Dictionary<int, Employee.Employee> employees = new Dictionary<int, Employee.Employee>();
+
+
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            var files = Directory.GetFiles(path);
+            foreach (var f in files)
+            {
+                Stream s = File.Open(f, FileMode.Open);
+                Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
+                employees.Add(e.Id, e);
+            }
+
+
+            return employees;
+        }
+
+
+        public static void printAllEmployees()
+        {
+            foreach(var e in getAllEmployees(fileLocationSerial))
+            {
+                Console.WriteLine(e.Value.ToString());
+            }
+        }
+
     }
 }
