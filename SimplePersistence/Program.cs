@@ -259,6 +259,7 @@ namespace SimplePersistence
                 }
             }
             return empList;
+        }
 
         public static void PrintSerializedDetails(string path)
         {
