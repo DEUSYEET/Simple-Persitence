@@ -1,5 +1,6 @@
 ﻿using CSC160_ConsoleMenu;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -8,26 +9,20 @@ namespace SimplePersistence
 {
     public class Program
     {
-        //static string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
-        //static string fileLocationSerial = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long serialized";
+        static string fileLocation = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long";
+        static string fileLocationSerial = "C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\long serialized";
 
 
-        static string fileLocation = "C:\\Users\\drago\\Downloads\\People Records\\people\\long";
-        static string fileLocationSerial = "C:\\Users\\drago\\Downloads\\People Records\\people\\longserialized";
+        //static string fileLocation = "C:\\Users\\drago\\Downloads\\People Records\\people\\long";
+        //static string fileLocationSerial = "C:\\Users\\drago\\Downloads\\People Records\\people\\longserialized";
 
 
         public static void Main(string[] args)
         {
             int choice;
-            //var files = Directory.GetFiles("C:\\Users\\Wesley Monk\\Documents\\Quarter 5 Classes\\Databases 2\\People Records\\people\\simple");
-            //foreach (var f in files)
-            //{
-            //    PrintPeopleDetails(f);
-            //    PrintEmployees(f);
-            //}
             do
             {
-                String[] menu = { "Add Employee", "Delete Employee", "Update Employee", "Serialize All Employees", "Find serialized employee" };
+                String[] menu = { "Add Employee", "Delete Employee", "Update Employee", "Serialize All Employees", "Find serialized employee", "Find Employee By ID", "Find Employee by Last Name", "Find All Employees with Same Last Name" };
                 choice = CIO.PromptForMenuSelection(menu, true);
 
                 switch (choice)
@@ -45,7 +40,20 @@ namespace SimplePersistence
                         SerializeAllEmployees();
                         break;
                     case 5:
-                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ",1,Int32.MaxValue)).ToString());
+                        Console.WriteLine(GetSerializedEmployee(CIO.PromptForInt("Enter Employee ID: ", 1, Int32.MaxValue)).ToString());
+                        break;
+                    case 6:
+                        Console.WriteLine(FindEmployeeById(CIO.PromptForInt("Enter Employee ID: ", 1, Int32.MaxValue)).ToString());
+                        break;
+                    case 7:
+                        Console.WriteLine(FindEmployeeByLastName(CIO.PromptForInput("Enter Last Name: ", false)).ToString());
+                        break;
+                    case 8:
+                        string lastName = CIO.PromptForInput("Enter Last Name: ", false);
+                        foreach (var f in FindAllEmployeesByLastName(lastName))
+                        {
+                            Console.WriteLine(f.ToString());
+                        }
                         break;
                 }
 
@@ -162,7 +170,7 @@ namespace SimplePersistence
                 Int32.TryParse(words[3], out int year);
 
                 Employee.Employee emp = new Employee.Employee(id, words[1], words[2], year);
-                Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Create);
+                Stream s = File.Open(fileLocationSerial + $"\\{id}.ser", FileMode.Create);
                 binaryFormatter.Serialize(s, emp);
                 Console.WriteLine($"Serialized employee ID: {id}");
                 s.Close();
@@ -173,15 +181,72 @@ namespace SimplePersistence
 
         }
 
-
         public static Employee.Employee GetSerializedEmployee(int id)
         {
-            Stream s = File.Open(fileLocationSerial+$"\\{id}.txt", FileMode.Open);
+            Stream s = File.Open(fileLocationSerial + $"\\{id}.txt", FileMode.Open);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             Employee.Employee e = (Employee.Employee)binaryFormatter.Deserialize(s);
             s.Close();
 
             return e;
         }
+
+        public static Employee.Employee FindEmployeeById(int id)
+        {
+            Employee.Employee emp = new Employee.Employee(0, "N/A", "N/A", 0);
+            var files = Directory.GetFiles(fileLocation);
+            foreach (var f in files)
+            {
+                if (Path.GetFileName(f) == id + ".txt")
+                {
+                    string text = File.ReadAllText(f);
+                    string[] words = text.Split(',');
+                    Int32.TryParse(words[3], out int year);
+
+                    emp = new Employee.Employee(id, words[1], words[2], year);
+                }
+            }
+            return emp;
+        }
+
+        public static Employee.Employee FindEmployeeByLastName(string lastName)
+        {
+            Employee.Employee emp = new Employee.Employee(0, "N/A", "N/A", 0);
+            var files = Directory.GetFiles(fileLocation);
+            foreach (var f in files)
+            {
+                string text = File.ReadAllText(f);
+                string[] words = text.Split(',');
+                if (lastName.ToLower().Equals(words[2].ToLower().Trim()))
+                {
+                    Int32.TryParse(words[3], out int id);
+                    Int32.TryParse(words[3], out int year);
+                    emp = new Employee.Employee(id, words[1], words[2], year);
+                    break;
+                }
+            }
+            return emp;
+        }
+
+        public static List<Employee.Employee> FindAllEmployeesByLastName(string lastName)
+        {
+            List<Employee.Employee> empList = new List<Employee.Employee>();
+
+            var files = Directory.GetFiles(fileLocation);
+            foreach (var f in files)
+            {
+                string text = File.ReadAllText(f);
+                string[] words = text.Split(',');
+                if (lastName.ToLower().Equals(words[2].ToLower().Trim()))
+                {
+                    Int32.TryParse(words[0], out int id);
+                    Int32.TryParse(words[3], out int year);
+                    Employee.Employee emp = new Employee.Employee(id, words[1], words[2], year);
+                    empList.Add(emp);
+                }
+            }
+            return empList;
+        }
+
     }
 }
